@@ -19,4 +19,9 @@ export class EventService {
   getEvent(id: string) : Observable<EventModel> {
     return this.http.get<EventModel>(`${this.apiUrl}/api/events/${id}`)
   }
+
+  checkout(id: string, quantity: number) : Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/events/checkout/${id}/${quantity}`);
+  }
+  
 }
