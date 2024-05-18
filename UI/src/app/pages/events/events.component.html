@@ -27,7 +27,6 @@
     </div>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Event card (repeat this for each event) -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden" *ngFor="let event of events">
       <img
         src="https://via.placeholder.com/500x300"
@@ -35,21 +34,20 @@
         class="w-full h-56 object-cover"
       />
       <div class="p-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ event.Title }}</h2>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ event.title }}</h2>
         <p class="text-gray-600 mb-4">
-          {{ event.Description }}
+          {{ event.description }}
         </p>
-        <p class="text-gray-800">Date: January 1, 2025</p>
-        <p class="text-gray-800">Location: City, Country</p>
+        <p class="text-gray-800">Date: {{ event.date | date:'longDate' }}</p>
+        <p class="text-gray-800">Location: {{ event.location }}</p>
         <div class="mt-4">
           <a
-            href="#"
             class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+            [routerLink]="['/event/' + event.id]" routerLinkActive="router-link-active" 
             >Buy Tickets</a
           >
         </div>
       </div>
     </div>
-    <!-- Repeat the above card for each event -->
   </div>
 </div>

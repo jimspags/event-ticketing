@@ -1,8 +1,8 @@
 export class EventModel {
-  Id!: string;
-  Title!: string;
-  Description!: string;
-  Price!: number;
-  Location!: string;
-  Date!: string;
+  id!: string;
+  title!: string;
+  description!: string;
+  price!: number;
+  location!: string;
+  date!: string;
 }
