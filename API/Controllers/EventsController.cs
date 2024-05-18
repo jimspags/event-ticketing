@@ -22,5 +22,18 @@ namespace API.Controllers
         {
             return await _dbContext.Events.ToListAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var getEvent = await _dbContext.Events.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (getEvent is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(getEvent);
+        }
     }
 }
