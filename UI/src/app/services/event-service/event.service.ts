@@ -10,18 +10,22 @@ export class EventService {
 
   constructor(private http: HttpClient) { }
 
-  apiUrl: string = 'https://localhost:7220';
+  apiUrl: string = 'https://localhost:7220/api/events';
 
   getEvents() : Observable<EventModel[]> {
-    return this.http.get<EventModel[]>(`${this.apiUrl}/api/events`);
+    return this.http.get<EventModel[]>(`${this.apiUrl}/`);
+  }
+
+  getFilteredEvents(category: string, search: string) : Observable<EventModel[]> {
+    return this.http.get<EventModel[]>(`${this.apiUrl}/filter/${category}?search=${search}`);
   }
 
   getEvent(id: string) : Observable<EventModel> {
-    return this.http.get<EventModel>(`${this.apiUrl}/api/events/${id}`)
+    return this.http.get<EventModel>(`${this.apiUrl}/${id}`)
   }
 
   checkout(id: string, quantity: number) : Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/api/events/checkout/${id}/${quantity}`);
+    return this.http.get<any>(`${this.apiUrl}/checkout/${id}/${quantity}`);
   }
   
 }
