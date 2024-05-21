@@ -25,7 +25,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Database.Entities.Event>>> GetAll()
         {
-            return await _dbContext.Events.ToListAsync();
+            return await _dbContext.Events.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -86,5 +86,38 @@ namespace API.Controllers
 
             return Ok(new { Url = session.Url });
         }
+
+        [HttpGet("filter/{category}")]
+        public async Task<ActionResult<List<Database.Entities.Event>>> Filter(string category, [FromQuery] string? search = null)
+        {
+            search = search ?? string.Empty;
+
+            var events = _dbContext.Events
+                .AsNoTracking()
+                .Where(x =>
+                    x.Title.ToLower().Contains(search.ToLower()) ||
+                    x.Description.ToLower().Contains(search.ToLower())
+                )
+                .AsQueryable();
+
+            var dateTimeNow = DateTimeOffset.Now;
+
+            switch (category)
+            {
+                case "all":
+                    break;
+                case "upcoming":
+                    events = events.Where(x => x.Date > dateTimeNow);
+                    break;
+                case "recent":
+                    events = events.Where(x => x.Date <= dateTimeNow && x.Date >= dateTimeNow.AddDays(-30));
+                    break;
+                default:
+                    return BadRequest();
+            }
+
+            return await events.ToListAsync();
+        }
+
     }
 }
