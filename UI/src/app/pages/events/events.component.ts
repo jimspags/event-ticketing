@@ -26,6 +26,7 @@ export class EventsComponent implements OnInit {
   }
 
   getEvents() {
+    this.events = undefined;
     this.eventService.getFilteredEvents(this.eventsCategory, this.eventsSearch)
     .subscribe((result: EventModel[]) => {
       this.events = result;
