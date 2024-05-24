@@ -143,5 +143,14 @@ namespace API.Controllers
 
             return Redirect($"http://localhost:4200/payment-success/{session_id}");
         }
+
+        [HttpGet("order-details/{sessionId}")]
+        public async Task<ActionResult<PaymentSuccessOrderDetails>> GetOrderDetails(string sessionId)
+        {
+            var result = new Stripe.Checkout.SessionService();
+            var lineItem = result.ListLineItems(sessionId);
+
+            return new PaymentSuccessOrderDetails() { Title = lineItem.First().Description, Quantity = (int)lineItem.First().Quantity, TotalAmout = lineItem.First().AmountTotal };
+        }
     }
 }
