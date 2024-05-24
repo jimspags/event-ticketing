@@ -17,8 +17,9 @@ export class EventComponent implements OnInit{
   eventId: string = '';
   event: EventModel = new EventModel();
   quantity: number = 0;
+  isCheckout: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private eventService: EventService, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private eventService: EventService) {
     
   }
 
@@ -35,9 +36,11 @@ export class EventComponent implements OnInit{
   }
 
   checkout() {
+    if (this.quantity == 0) return;
+
+    this.isCheckout = true;
     this.eventService.checkout(this.eventId, this.quantity)
     .subscribe((result: any) => {
-      console.log(result);
       window.location.href = result.url;
     })
   }

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { EventModel } from '../../models/event-model';
+import { PaymentSuccessOrderDetailsModel } from '../../models/payment-success-order-details-model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,8 @@ export class EventService {
   checkout(id: string, quantity: number) : Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/checkout/${id}/${quantity}`);
   }
-  
+
+  getOrderDetails(sessionId: string) : Observable<PaymentSuccessOrderDetailsModel> {
+    return this.http.get<PaymentSuccessOrderDetailsModel>(`${this.apiUrl}/order-details/${sessionId}`)
+  }
 }
