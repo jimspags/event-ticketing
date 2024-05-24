@@ -1,10 +1,14 @@
 ﻿using API.Database;
+using API.Helpers;
 using API.Models;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
+using System.Net;
+using System.Net.Mail;
 
 
 namespace API.Controllers
@@ -15,11 +19,13 @@ namespace API.Controllers
     {
         private readonly AutomationDbContext _dbContext;
         private readonly StripeSettings _stripeSettings;
-
-        public EventsController(AutomationDbContext dbContext, IOptions<StripeSettings> stripeSettings)
+        private readonly IEmailSenderService _emailSenderService;
+        public EventsController(AutomationDbContext dbContext, IOptions<StripeSettings> stripeSettings, IEmailSenderService emailSenderService)
         {
             _dbContext = dbContext;
             _stripeSettings = stripeSettings.Value;
+            _emailSenderService = emailSenderService;
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
         }
 
         [HttpGet]
@@ -48,8 +54,8 @@ namespace API.Controllers
             if (getEvent is null) return NotFound();
   
             var currency = "usd";
-            var successUrl = "http://localhost:4200";
-            var cancelUrl = "http://localhost:4200/event/" + eventId;
+            var successUrl = "https://localhost:7220/api/events/paymentsuccess?session_id={CHECKOUT_SESSION_ID}";
+            var cancelUrl = $"http://localhost:4200/event/{eventId}";
             StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
 
             var options = new SessionCreateOptions
@@ -82,7 +88,6 @@ namespace API.Controllers
 
             var service = new SessionService();
             var session = service.Create(options);
-            //SessionId = session.Id;
 
             return Ok(new { Url = session.Url });
         }
@@ -119,5 +124,24 @@ namespace API.Controllers
             return await events.ToListAsync();
         }
 
+
+        [HttpGet("paymentsuccess")]
+        public async Task<IActionResult> PaymentSuccess([FromQuery] string? session_id = null)
+        {
+            if (session_id is null) return BadRequest();
+
+            var result = new Stripe.Checkout.SessionService();
+            var customer = await result.GetAsync(session_id);
+
+            var customerEmail = customer.CustomerDetails.Email;
+            var lineItem = result.ListLineItems(session_id);
+
+            var emailBody = Helpers.Helpers.ConstructEmailBody(lineItem.First().Description, (int)lineItem.First().Quantity, lineItem.First().AmountTotal);
+
+            // Send Email
+            await _emailSenderService.SendEmailAsync(customerEmail, $"{lineItem.First().Description} Ticket Payment Success", emailBody);
+
+            return Redirect($"http://localhost:4200/payment-success/{session_id}");
+        }
     }
 }
