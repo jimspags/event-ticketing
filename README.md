@@ -21,7 +21,7 @@ This project is a web application built using C# Web API for the backend and Ang
 7. Build and run the backend: `dotnet build` and `dotnet run`
 8. Navigate to the frontend directory: `cd ../UI`
 9. Install dependencies: `npm install`
-10. Configure the backend API URL in the AngularJS environment file.
+10. Configure the backend API URL in the AngularJS services file.
 11. Build and run the frontend: `ng serve`
 
 ## Usage
