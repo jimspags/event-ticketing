@@ -1,4 +1,3 @@
-```
 # Project Title
 
 ## Description
@@ -38,4 +37,4 @@ This project is licensed under the [MIT License](LICENSE).
 - Stripe API Documentation: [Link](https://stripe.com/docs)
 - AngularJS Documentation: [Link](https://angularjs.org/)
 - Microsoft Docs for C# Web API: [Link](https://docs.microsoft.com/en-us/aspnet/web-api/)
-```
+
