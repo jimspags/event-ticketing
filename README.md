@@ -31,7 +31,7 @@ This project is a web application built using C# Web API for the backend and Ang
 4. After successful payment, you will receive an email containing your receipt.
 
 ## Contributors
-- [James Paul Paguirigan][(https://github.com/yourusername)](https://github.com/jimspags)
+- [James Paul Paguirigan] (https://github.com/jimspags)
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
