@@ -1,5 +1,5 @@
-﻿using API.Database;
-using API.Helpers;
+﻿using API.Configuration;
+using API.Database;
 using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
-using System.Net;
-using System.Net.Mail;
-
 
 namespace API.Controllers
 {
@@ -29,15 +26,37 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Database.Entities.Event>>> GetAll()
+        public async Task<ActionResult<List<EventModel>>> GetAll()
         {
-            return await _dbContext.Events.AsNoTracking().ToListAsync();
+            return await _dbContext.Events
+                .AsNoTracking()
+                .Select(x => new EventModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Location = x.Location,
+                    Price = x.Price,
+                    Date = x.Date
+                })
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<ActionResult<EventModel>> Get(Guid id)
         {
-            var getEvent = await _dbContext.Events.FirstOrDefaultAsync(x => x.Id == id);
+            var getEvent = await _dbContext.Events
+                .Select(x => new EventModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Location = x.Location,
+                    Price = x.Price,
+                    Date = x.Date
+                })
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (getEvent is null)
             {
@@ -93,7 +112,7 @@ namespace API.Controllers
         }
 
         [HttpGet("filter/{category}")]
-        public async Task<ActionResult<List<Database.Entities.Event>>> Filter(string category, [FromQuery] string? search = null)
+        public async Task<ActionResult<List<EventModel>>> Filter(string category, [FromQuery] string? search = null)
         {
             search = search ?? string.Empty;
 
@@ -121,9 +140,19 @@ namespace API.Controllers
                     return BadRequest();
             }
 
-            return await events.ToListAsync();
+            return await events
+                .Select(x => new EventModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Location = x.Location,
+                    Price = x.Price,
+                    Date = x.Date
+                })
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
         }
-
 
         [HttpGet("paymentsuccess")]
         public async Task<IActionResult> PaymentSuccess([FromQuery] string? session_id = null)
@@ -150,7 +179,7 @@ namespace API.Controllers
             var result = new Stripe.Checkout.SessionService();
             var lineItem = result.ListLineItems(sessionId);
 
-            return new PaymentSuccessOrderDetails() { Title = lineItem.First().Description, Quantity = (int)lineItem.First().Quantity, TotalAmout = lineItem.First().AmountTotal };
+            return new PaymentSuccessOrderDetails() { Title = lineItem.First().Description, Quantity = (int)lineItem.First().Quantity, TotalAmount = (int)lineItem.First().AmountTotal };
         }
     }
 }
