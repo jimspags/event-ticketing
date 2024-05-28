@@ -1,6 +1,6 @@
 export class PaymentSuccessOrderDetailsModel {
     title!: string;
     quantity!: number;
-    totalamount!: number;
+    totalAmount!: number;
   }
   
