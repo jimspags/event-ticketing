@@ -7,7 +7,7 @@
         <div class="text-gray-600 mb-4">
             <p>Event Title: <span class="font-semibold">{{ this.paymentSuccessOrderDetails.title }}</span></p>
             <p>Quantity: <span class="font-semibold">{{ this.paymentSuccessOrderDetails.quantity }}</span></p>
-            <p>Total Amount: <span class="font-semibold">${{ this.paymentSuccessOrderDetails.totalamount }}</span></p>
+            <p>Total Amount: <span class="font-semibold">${{  (this.paymentSuccessOrderDetails.totalAmount / 100).toFixed(2) }}</span></p>
         </div>
         <p class="text-gray-600 mb-8">Thank you for your purchase. Your payment has been successfully processed.</p>
         <a [routerLink]="['/']" routerLinkActive="router-link-active"  class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-300">Back to Home</a>
