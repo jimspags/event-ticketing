@@ -1,5 +1,5 @@
+using API.Configuration;
 using API.Database;
-using API.Models;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
