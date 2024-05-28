@@ -2,7 +2,7 @@
 {
     public static class Helpers
     {
-        public static string ConstructEmailBody(string eventName, int quantity, decimal amountPaid)
+        public static string ConstructEmailBody(string eventName, int quantity, long amountPaid)
         {
             string emailBody = $@"
                 <html>
@@ -17,7 +17,7 @@
                     </ul>
                     <h3>Payment Details:</h3>
                     <ul>
-                        <li><strong>Amount Paid:</strong> {amountPaid}</li>
+                        <li><strong>Amount Paid:</strong> {string.Format("${0:0.00}", amountPaid / 100.0)}</li>
                     </ul>
                     <p>Please bring this email and a valid ID to the event for entry.</p>
                     <p>If you have any questions or need further assistance, feel free to contact our support team.</p>
