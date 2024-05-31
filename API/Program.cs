@@ -17,8 +17,23 @@ builder.Services.AddDbContext<AutomationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+// Add environment variables to configuration
+builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
+var stripeSettings = new StripeSettings()
+{
+    PublicKey = Environment.GetEnvironmentVariable("StripeSettings__PublishableKey"),
+    SecretKey = Environment.GetEnvironmentVariable("StripeSettings__SecretKey")
+};
+
+var emailCreds = new EmailCredential()
+{
+    Email = Environment.GetEnvironmentVariable("EventTicketing__Email"),
+    Password = Environment.GetEnvironmentVariable("EventTicketing__Password")
+};
+
+builder.Services.AddSingleton(emailCreds);
+builder.Services.AddSingleton(stripeSettings);
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
