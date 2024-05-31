@@ -1,5 +1,6 @@
 ﻿using System.Net.Mail;
 using System.Net;
+using API.Configuration;
 
 namespace API.Services
 {
@@ -9,13 +10,16 @@ namespace API.Services
     }
     public class EmailSenderService : IEmailSenderService
     {
+        private readonly EmailCredential _emailCredential;
+        public EmailSenderService(EmailCredential emailCredential)
+        {
+            _emailCredential = emailCredential;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string message)
         {
-            //var mail = Environment.GetEnvironmentVariable("");
-            //var pw = Environment.GetEnvironmentVariable("");
-            
-            var mail = "jimspuldev@outlook.com";
-            var pw = "Stephencurry30";
+            var mail = _emailCredential.Email;
+            var pw = _emailCredential.Password;
 
             var client = new SmtpClient("smtp-mail.outlook.com", 587)
             {
