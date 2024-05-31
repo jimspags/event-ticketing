@@ -15,14 +15,12 @@ namespace API.Controllers
     public class EventsController : ControllerBase
     {
         private readonly AutomationDbContext _dbContext;
-        private readonly StripeSettings _stripeSettings;
         private readonly IEmailSenderService _emailSenderService;
-        public EventsController(AutomationDbContext dbContext, IOptions<StripeSettings> stripeSettings, IEmailSenderService emailSenderService)
+        public EventsController(AutomationDbContext dbContext, StripeSettings stripeSettings, IEmailSenderService emailSenderService)
         {
             _dbContext = dbContext;
-            _stripeSettings = stripeSettings.Value;
             _emailSenderService = emailSenderService;
-            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+            StripeConfiguration.ApiKey = stripeSettings.SecretKey;
         }
 
         [HttpGet]
@@ -75,7 +73,6 @@ namespace API.Controllers
             var currency = "usd";
             var successUrl = "https://localhost:7220/api/events/paymentsuccess?session_id={CHECKOUT_SESSION_ID}";
             var cancelUrl = $"http://localhost:4200/event/{eventId}";
-            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
 
             var options = new SessionCreateOptions
             {
